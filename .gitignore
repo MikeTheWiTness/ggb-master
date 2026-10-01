@@ -1,0 +1,18 @@
+# —— 本地语料与工作产物：不随仓库分发（ADR-0005）——
+/samples/
+/extractions/
+/ggb绘图/
+/projects/
+/exports/
+/backup/
+/*.ggb
+
+# —— 本机 harness 与缓存 ——
+/.zcode/
+/.workbuddy/
+/.pytest_cache/
+__pycache__/
+*.pyc
+
+# —— Finder / 编辑器 ——
+.DS_Store

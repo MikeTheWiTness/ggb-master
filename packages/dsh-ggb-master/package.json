@@ -1,0 +1,31 @@
+{
+  "name": "dsh-ggb-master",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "把 ggb-master 的 GeoGebra 课件生产流程接入 DSH profile 的组合包：挂载 ggb-master skill、注册 ggb 原生工具、声明「GGB 课件」agent preset，Generate / Modify 工作流可随时插拔",
+  "main": "tools/index.js",
+  "exports": {
+    ".": "./tools/index.js",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./skills/*": "./skills/*"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "icon": "./icon.svg",
+  "files": [
+    "cordis.patch.yml",
+    "tools/",
+    "skills/",
+    "locale/",
+    "host-probe/",
+    "icon.svg",
+    "README.md"
+  ],
+  "license": "MIT"
+}

@@ -1,0 +1,1185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 线框入磁 v-t 基准样例（运动-图像关联样板）：
+     真实成品 线框入磁v-t图像.ggb 解包原样收录；解剖见 templates/motion-graph.md。
+     单视图插图区 v-t 图 = CurveCartesian 仿射映射 + 同步跟踪点 + startPoint 锚定刻度；
+     NSolveODE 换自变量求阶段边界值（v2/t2），曲线本体用解析闭式 fv(x)。
+     物理三段解析（v_C=mgR/(B²l²)，K=g/v_C，t1=v1/g，h=v1²/(2g)，v1=k·v_C）：
+       ① 自由落体 t∈[0,t1]：   v=g·t，s=½g·t²
+       ② 阻尼进入 t∈[t1,t2]： v=v_C+(v1-v_C)e^{−K(t−t1)}，s=h+v_C·τ+(v1−v_C)(1−e^{−Kτ})/K
+       ③ 尾段 t∈[t2,tEnd]：   v=v2+g(t−t2)，s=h+H+v2·(t−t2)+½g(t−t2)²
+       段界值 v2/τ2（t2=t1+τ2）由 NSolveODE 解 dv/dx=g/v−K、dτ/dx=1/v、x∈[0,H] 取终点。 -->
+
+<geogebra xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" format="5.0" version="5.2.871.0" app="classic" platform="d" xsi:noNamespaceSchemaLocation="http://www.geogebra.org/apps/xsd/ggb.xsd">
+	<gui>
+		<window width="1200" height="800" />
+		<perspectives>
+			<perspective id="tmp">
+				<panes>
+					<pane location="" divider="0.8" orientation="1" />
+				</panes>
+				<views>
+					<view id="1" visible="true" inframe="false" stylebar="true" location="3" size="1200" window="100,100,600,400" />
+				</views>
+				<toolbar show="true" items="0 73 62 | 1 501 67 , 5 19 , 72 75 76 | 2 15 45 , 18 65 , 7 37 | 4 3 8 9 , 13 44 , 58 , 47 | 16 51 64 , 70 | 10 34 53 11 , 24  20 22 , 21 23 | 55 56 57 , 12 | 36 46 , 38 49  50 , 71  14  68 | 30 29 54 32 31 33 | 25 17 26 60 52 61 | 40 41 42 , 27 28 35 , 6" position="1" help="false" />
+				<input show="true" cmd="true" top="algebra" />
+				<dockBar show="false" east="false" />
+			</perspective>
+		</perspectives>
+		<labelingStyle val="1" />
+		<font size="18" />
+	</gui>
+	<euclidianView>
+		<viewNumber viewNo="1" />
+		<size width="1200" height="800" />
+		<coordSystem xZero="310" yZero="410" scale="200" yscale="200" />
+		<evSettings axes="false" grid="false" gridIsBold="false" pointCapturing="3" rightAngleStyle="1" checkboxSize="26" gridType="3" />
+		<bgColor r="255" g="255" b="255" />
+		<axesColor r="37" g="37" b="37" />
+		<gridColor r="192" g="192" b="192" />
+		<lineStyle axes="1" grid="0" />
+		<axis id="0" show="false" label="" unitLabel="" tickStyle="1" showNumbers="false" />
+		<axis id="1" show="false" label="" unitLabel="" tickStyle="1" showNumbers="false" />
+	</euclidianView>
+	<algebraView>
+		<mode val="1" />
+	</algebraView>
+	<kernel>
+		<continuous val="false" />
+		<usePathAndRegionParameters val="true" />
+		<decimals val="3" />
+		<angleUnit val="degree" />
+		<algebraStyle val="0" spreadsheet="0" />
+		<coordStyle val="0" />
+	</kernel>
+	<tableview min="-2.0" max="2.0" step="1.0" />
+	<scripting blocked="false" disabled="false" />
+	<construction title="线框入磁v-t图像" author="" date="">
+		<!-- ============ 1. 物理参数滑杆（教师层：一个物理量一个滑杆） ============ -->
+		<element type="numeric" label="B">
+	<value val="0.8"/>
+	<slider min="0.5" max="1.0" width="140" x="490" y="8" absoluteScreenLocation="true" fixed="false" horizontal="true" showAlgebra="true" />
+	<lineStyle thickness="10" type="0" typeHidden="1"/>
+	<show object="true" label="true" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="0"/>
+	<labelMode val="1"/>
+	<animation speed="1" type="1" playing="false" />
+	<caption val="磁感应强度 B (T)"/>
+</element>
+		<element type="numeric" label="l">
+	<value val="0.35"/>
+	<slider min="0.25" max="0.45" width="140" x="650" y="8" absoluteScreenLocation="true" fixed="false" horizontal="true" showAlgebra="true" />
+	<lineStyle thickness="10" type="0" typeHidden="1"/>
+	<show object="true" label="true" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="0"/>
+	<labelMode val="1"/>
+	<animation speed="1" type="1" playing="false" />
+	<caption val="底边 ab 长 (m)"/>
+</element>
+		<element type="numeric" label="H">
+	<value val="0.6"/>
+	<slider min="0.3" max="0.8" width="140" x="810" y="8" absoluteScreenLocation="true" fixed="false" horizontal="true" showAlgebra="true" />
+	<lineStyle thickness="10" type="0" typeHidden="1"/>
+	<show object="true" label="true" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="0"/>
+	<labelMode val="1"/>
+	<animation speed="1" type="1" playing="false" />
+	<caption val="线框高度 d (m)"/>
+</element>
+		<element type="numeric" label="m">
+	<value val="0.05"/>
+	<slider min="0.03" max="0.10" width="140" x="20" y="52" absoluteScreenLocation="true" fixed="false" horizontal="true" showAlgebra="true" />
+	<lineStyle thickness="10" type="0" typeHidden="1"/>
+	<show object="true" label="true" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="0"/>
+	<labelMode val="1"/>
+	<animation speed="1" type="1" playing="false" />
+	<caption val="线框质量 (kg)"/>
+</element>
+		<element type="numeric" label="R">
+	<value val="0.25"/>
+	<slider min="0.15" max="0.45" width="140" x="180" y="52" absoluteScreenLocation="true" fixed="false" horizontal="true" showAlgebra="true" />
+	<lineStyle thickness="10" type="0" typeHidden="1"/>
+	<show object="true" label="true" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="0"/>
+	<labelMode val="1"/>
+	<animation speed="1" type="1" playing="false" />
+	<caption val="线框电阻 (Ω)"/>
+</element>
+		<element type="numeric" label="g">
+	<value val="9.8"/>
+	<slider min="5" max="15" width="140" x="340" y="52" absoluteScreenLocation="true" fixed="false" horizontal="true" showAlgebra="true" />
+	<lineStyle thickness="10" type="0" typeHidden="1"/>
+	<show object="true" label="true" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="0"/>
+	<labelMode val="1"/>
+	<animation speed="1" type="1" playing="false" />
+	<caption val="重力加速度 g (m/s²)"/>
+</element>
+		<element type="numeric" label="k">
+	<value val="1.5"/>
+	<slider min="0.3" max="2.2" width="280" x="20" y="8" absoluteScreenLocation="true" fixed="false" horizontal="true" showAlgebra="true" />
+	<lineStyle thickness="10" type="0" typeHidden="1"/>
+	<show object="true" label="true" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="0"/>
+	<labelMode val="1"/>
+	<animation speed="1" type="1" playing="false" />
+	<caption val="进入速度比 k = v₁/v_C（观众主控）"/>
+</element>
+		<!-- ============ 2. 派生物理量（解析闭式） ============ -->
+		<expression label="vC" exp="m*g*R/(B^2*l^2)" type="numeric" />
+		<element type="numeric" label="vC">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<value val="1.5625" />
+			<caption val="临界速度 mgR/(B²l²)" />
+		</element>
+		<expression label="v1" exp="k*vC" type="numeric" />
+		<element type="numeric" label="v1">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<value val="2.34375" />
+			<caption val="进入磁场时速度" />
+		</element>
+		<expression label="t1" exp="v1/g" type="numeric" />
+		<element type="numeric" label="t1">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<value val="0.23915816326530612" />
+			<caption val="ab 边刚进入磁场时刻" />
+		</element>
+		<expression label="h" exp="v1*t1/2" type="numeric" />
+		<element type="numeric" label="h">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<value val="0.2802634725765306" />
+			<caption val="释放高度（ab 边到磁场边界距离）" />
+		</element>
+		<expression label="K" exp="g/vC" type="numeric" />
+		<element type="numeric" label="K">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<value val="6.272" />
+			<caption val="阻尼速率常数 g/v_C" />
+		</element>
+		<!-- ============ 3. NSolveODE 数值解：进入过程 v(x) 与 τ(x)（x=进入距离） ============ -->
+		<expression label="v'" exp="v'(x, v, w) = g/v - K" type="function" />
+		<element type="functionnvar" label="v'">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="0" />
+			<labelMode val="0" />
+		</element>
+		<expression label="tau'" exp="tau'(x, v, w) = 1/v" type="function" />
+		<element type="functionnvar" label="tau'">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="0" />
+			<labelMode val="0" />
+		</element>
+		<command name="NSolveODE">
+			<input a0="{v', tau'}" a1="0" a2="{v1, 0}" a3="H" />
+			<output a0="nv" a1="nt" />
+		</command>
+		<element type="locus" label="nv">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+		</element>
+		<element type="locus" label="nt">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+		</element>
+		<command name="Point">
+			<input a0="nv" a1="1" />
+			<output a0="P_v2" />
+		</command>
+		<element type="point" label="P_v2">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<pointSize val="3" />
+			<pointStyle val="0" />
+			<coords x="0.6" y="1.6706208777116553" z="1.0" />
+		</element>
+		<command name="Point">
+			<input a0="nt" a1="1" />
+			<output a0="P_t2" />
+		</command>
+		<element type="point" label="P_t2">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<pointSize val="3" />
+			<pointStyle val="0" />
+			<coords x="0.6" y="0.31531335486853634" z="1.0" />
+		</element>
+		<expression label="v2" exp="y(P_v2)" type="numeric" />
+		<element type="numeric" label="v2">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<value val="1.6706208777116553" />
+			<caption val="cd 边刚进入磁场时速度" />
+		</element>
+		<expression label="td" exp="y(P_t2)" type="numeric" />
+		<element type="numeric" label="td">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<value val="0.31531335486853634" />
+			<caption val="进入过程时长 Δ" />
+		</element>
+		<expression label="t2" exp="t1 + td" type="numeric" />
+		<element type="numeric" label="t2">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<value val="0.5544715181338424" />
+			<caption val="cd 边刚进入磁场时刻" />
+		</element>
+		<expression label="tEnd" exp="t2 + 0.5" type="numeric" />
+		<element type="numeric" label="tEnd">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<value val="1.0544715181338424" />
+			<caption val="演示终点时刻（完全进入+尾段 0.5s）" />
+		</element>
+		<expression label="vTail" exp="v2 + 0.5*g" type="numeric" />
+		<element type="numeric" label="vTail">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<value val="6.570620877711656" />
+			<caption val="尾段末速度" />
+		</element>
+		<expression label="tRange" exp="(tEnd + 0.1)*1.25" type="numeric" />
+		<element type="numeric" label="tRange">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<value val="1.4430893976673032" />
+			<caption val="v-t 图横轴范围" />
+		</element>
+		<!-- ============ 4. 主时钟滑杆（动态上限 tEnd，播完自停） ============ -->
+		<element type="numeric" label="t">
+	<value val="0"/>
+	<slider min="0" max="tEnd" width="150" x="320" y="8" absoluteScreenLocation="true" fixed="false" horizontal="true" showAlgebra="true" />
+	<lineStyle thickness="10" type="0" typeHidden="1"/>
+	<show object="true" label="true" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="0"/>
+	<labelMode val="1"/>
+	<animation speed="1.2" type="3" playing="false" />
+	<caption val="时间 t（动画主时钟）"/>
+	<ggbscript onUpdate="If[t &gt;= tEnd, SetCaption[btnPlay, &quot;播放 ▶&quot;]]"/>
+</element>
+		<!-- ============ 5. 运动学函数（解析分段闭式） ============ -->
+		<expression label="fv" exp="fv(x) = If[x &lt; t1, g*x, If[x &lt;= t2, vC + (v1 - vC)*exp(-K*(x - t1)), v2 + g*(x - t2)]]" type="function" />
+		<element type="function" label="fv">
+			<show object="false" label="false" ev="4" />
+			<objColor r="204" g="51" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<fixed val="true" />
+		</element>
+		<expression label="fs" exp="fs(x) = If[x &lt; t1, 0.5*g*x^2, If[x &lt;= t2, h + vC*(x - t1) + (v1 - vC)*(1 - exp(-K*(x - t1)))/K, h + H + v2*(x - t2) + 0.5*g*(x - t2)^2]]" type="function" />
+		<element type="function" label="fs">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<fixed val="true" />
+		</element>
+		<!-- ============ 6. 动画区：磁场边界 / × 点阵 / 线框 / 速度矢量 ============ -->
+		<expression label="O1" exp="(-1.25, 0)" type="point" />
+		<element type="point" label="O1">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<pointSize val="3" />
+			<pointStyle val="0" />
+			<coords x="-1.25" y="0" />
+		</element>
+		<expression label="O2" exp="(0.85, 0)" type="point" />
+		<element type="point" label="O2">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<pointSize val="3" />
+			<pointStyle val="0" />
+			<coords x="0.85" y="0" />
+		</element>
+		<command name="Segment">
+			<input a0="O1" a1="O2" />
+			<output a0="boundary" />
+		</command>
+		<element type="segment" label="boundary">
+			<show object="true" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<lineStyle thickness="3" type="0" typeHidden="1" />
+		</element>
+		<!-- 线框顶点（追随 fs(t)，a=左下 b=右下 c=右上 d=左上） -->
+		<expression label="a" exp="(-0.2 - l/2, h - fs(t))" type="point" />
+		<element type="point" label="a">
+			<show object="true" label="true" ev="4" />
+			<objColor r="0" g="0" b="255" alpha="0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<pointSize val="2" />
+			<pointStyle val="0" />
+			<coords x="-0.375" y="0.2802634725765306" z="1.0" />
+		</element>
+		<expression label="b" exp="(-0.2 + l/2, h - fs(t))" type="point" />
+		<element type="point" label="b">
+			<show object="true" label="true" ev="4" />
+			<objColor r="0" g="0" b="255" alpha="0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<pointSize val="2" />
+			<pointStyle val="0" />
+			<coords x="-0.025" y="0.2802634725765306" z="1.0" />
+		</element>
+		<expression label="c" exp="(-0.2 + l/2, h - fs(t) + H)" type="point" />
+		<element type="point" label="c">
+			<show object="true" label="true" ev="4" />
+			<objColor r="0" g="0" b="255" alpha="0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<pointSize val="2" />
+			<pointStyle val="0" />
+			<coords x="-0.025" y="0.8802634725765306" z="1.0" />
+		</element>
+		<expression label="d" exp="(-0.2 - l/2, h - fs(t) + H)" type="point" />
+		<element type="point" label="d">
+			<show object="true" label="true" ev="4" />
+			<objColor r="0" g="0" b="255" alpha="0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<pointSize val="2" />
+			<pointStyle val="0" />
+			<coords x="-0.375" y="0.8802634725765306" z="1.0" />
+		</element>
+		<command name="Polygon">
+			<input a0="a" a1="b" a2="c" a3="d" />
+			<output a0="wire" a1="se1" a2="se2" a3="se3" a4="se4" />
+		</command>
+		<element type="polygon" label="wire">
+			<show object="true" label="false" ev="4" />
+			<objColor r="0" g="0" b="255" alpha="0.15" />
+			<layer val="1" />
+			<labelMode val="0" />
+			<lineStyle thickness="3" type="0" typeHidden="1" opacity="255" />
+		</element>
+		<element type="segment" label="se1">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="255" alpha="0" />
+			<layer val="1" />
+			<labelMode val="0" />
+			<lineStyle thickness="3" type="0" typeHidden="1" />
+		</element>
+		<element type="segment" label="se2">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="255" alpha="0" />
+			<layer val="1" />
+			<labelMode val="0" />
+			<lineStyle thickness="3" type="0" typeHidden="1" />
+		</element>
+		<element type="segment" label="se3">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="255" alpha="0" />
+			<layer val="1" />
+			<labelMode val="0" />
+			<lineStyle thickness="3" type="0" typeHidden="1" />
+		</element>
+		<element type="segment" label="se4">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="255" alpha="0" />
+			<layer val="1" />
+			<labelMode val="0" />
+			<lineStyle thickness="3" type="0" typeHidden="1" />
+		</element>
+		<!-- 速度矢量（线框中心，红色箭头，长度正比于 fv(t)） -->
+		<expression label="M0" exp="(-0.2, h - fs(t) + H/2)" type="point" />
+		<element type="point" label="M0">
+			<show object="false" label="false" ev="4" />
+			<objColor r="255" g="0" b="0" alpha="0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<pointSize val="3" />
+			<pointStyle val="0" />
+			<coords x="-0.2" y="0.5802634725765305" z="1.0" />
+		</element>
+		<expression label="M0v" exp="M0 + (0, -fv(t)*0.09)" type="point" />
+		<element type="point" label="M0v">
+			<show object="false" label="false" ev="4" />
+			<objColor r="255" g="0" b="0" alpha="0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<pointSize val="3" />
+			<pointStyle val="0" />
+			<coords x="-0.2" y="0.5802634725765305" z="1.0" />
+		</element>
+		<command name="Vector">
+			<input a0="M0" a1="M0v" />
+			<output a0="vel" />
+		</command>
+		<element type="vector" label="vel">
+			<show object="true" label="false" ev="4" />
+			<objColor r="255" g="0" b="0" alpha="0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<lineStyle thickness="4" type="0" typeHidden="1" />
+		</element>
+		<!-- ============ 7. v-t 插图：轴 / 曲线 / 标注线 / 跟踪点 ============ -->
+		<expression label="Px0" exp="(1.15, -1.55)" type="point" />
+		<element type="point" label="Px0">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<pointSize val="2" />
+			<pointStyle val="0" />
+			<coords x="1.15" y="-1.55" />
+		</element>
+		<expression label="Px1" exp="(4.25, -1.55)" type="point" />
+		<element type="point" label="Px1">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<pointSize val="2" />
+			<pointStyle val="0" />
+			<coords x="4.25" y="-1.55" />
+		</element>
+		<expression label="Pv1" exp="(1.15, 1.05)" type="point" />
+		<element type="point" label="Pv1">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<pointSize val="2" />
+			<pointStyle val="0" />
+			<coords x="1.15" y="1.05" />
+		</element>
+		<command name="Segment">
+			<input a0="Px0" a1="Px1" />
+			<output a0="tAxis" />
+		</command>
+		<element type="segment" label="tAxis">
+			<show object="true" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<lineStyle thickness="2" type="0" typeHidden="1" />
+		</element>
+		<command name="Segment">
+			<input a0="Px0" a1="Pv1" />
+			<output a0="vAxis" />
+		</command>
+		<element type="segment" label="vAxis">
+			<show object="true" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<lineStyle thickness="2" type="0" typeHidden="1" />
+		</element>
+		<!-- 临界速度水平虚线 -->
+		<expression label="D1" exp="(1.15, -1.55 + vC*0.325)" type="point" />
+		<element type="point" label="D1">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="255" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<pointSize val="2" />
+			<pointStyle val="0" />
+			<coords x="1.15" y="-1.0421875" />
+		</element>
+		<expression label="D2" exp="(4.25, -1.55 + vC*0.325)" type="point" />
+		<element type="point" label="D2">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="255" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<pointSize val="2" />
+			<pointStyle val="0" />
+			<coords x="4.25" y="-1.0421875" />
+		</element>
+		<command name="Segment">
+			<input a0="D1" a1="D2" />
+			<output a0="v_{C}" />
+		</command>
+		<element type="segment" label="v_{C}">
+			<show object="true" label="true" ev="4" />
+			<objColor r="0" g="0" b="255" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<lineStyle thickness="1" type="10" typeHidden="1" />
+			<caption val="临界速度 v_C" />
+		</element>
+		<!-- t₁ 竖直虚线 -->
+		<expression label="E1" exp="(1.15 + t1/tRange*3.1, -1.55)" type="point" />
+		<element type="point" label="E1">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<pointSize val="2" />
+			<pointStyle val="0" />
+			<coords x="1.663752167620992" y="-1.55" z="1.0" />
+		</element>
+		<expression label="E2" exp="(1.15 + t1/tRange*3.1, -1.55 + fv(t1)*0.325)" type="point" />
+		<element type="point" label="E2">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<pointSize val="2" />
+			<pointStyle val="0" />
+			<coords x="1.663752167620992" y="-0.78828125" z="1.0" />
+		</element>
+		<command name="Segment">
+			<input a0="E1" a1="E2" />
+			<output a0="t_{1}" />
+		</command>
+		<element type="segment" label="t_{1}">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="128" g="128" b="128" alpha="0"/>
+	<layer val="0"/>
+	<labelMode val="0"/>
+	<lineStyle thickness="1" type="10" typeHidden="1"/>
+</element>
+		<!-- t₂ 竖直虚线 -->
+		<expression label="F1" exp="(1.15 + t2/tRange*3.1, -1.55)" type="point" />
+		<element type="point" label="F1">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<pointSize val="2" />
+			<pointStyle val="0" />
+			<coords x="2.3410985618724545" y="-1.55" z="1.0" />
+		</element>
+		<expression label="F2" exp="(1.15 + t2/tRange*3.1, -1.55 + fv(t2)*0.325)" type="point" />
+		<element type="point" label="F2">
+			<show object="false" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<layer val="0" />
+			<labelMode val="0" />
+			<pointSize val="2" />
+			<pointStyle val="0" />
+			<coords x="2.3410985618724545" y="-1.007048214743712" z="1.0" />
+		</element>
+		<command name="Segment">
+			<input a0="F1" a1="F2" />
+			<output a0="t_{2}" />
+		</command>
+		<element type="segment" label="t_{2}">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="128" g="128" b="128" alpha="0"/>
+	<layer val="0"/>
+	<labelMode val="0"/>
+	<lineStyle thickness="1" type="10" typeHidden="1"/>
+</element>
+		<!-- v-t 曲线（映射到插图区域） -->
+		<command name="CurveCartesian">
+			<input a0="1.15 + u*3.1/tRange" a1="-1.55 + fv(u)*0.325" a2="u" a3="0" a4="tEnd" />
+			<output a0="vtCurve" />
+		</command>
+		<element type="curvecartesian" label="vtCurve">
+			<show object="true" label="false" ev="4" />
+			<objColor r="204" g="51" b="0" alpha="0" />
+			<layer val="1" />
+			<labelMode val="0" />
+			<lineStyle thickness="4" type="0" typeHidden="1" />
+		</element>
+		<!-- 跟踪点（当前时刻在 v-t 图上的位置） -->
+		<expression label="Trk" exp="(1.15 + t*3.1/tRange, -1.55 + fv(t)*0.325)" type="point" />
+		<element type="point" label="Trk">
+			<show object="true" label="false" ev="4" />
+			<objColor r="204" g="0" b="0" alpha="0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<pointSize val="6" />
+			<pointStyle val="0" />
+			<coords x="1.15" y="-1.55" z="1.0" />
+		</element>
+		<!-- ============ 8. 文本（绝对屏幕位置） ============ -->
+		<expression label="titleText" exp="&quot;矩形线框进入匀强磁场 —— v-t 曲线探究&quot;" type="text" />
+		<element type="text" label="titleText">
+			<show object="true" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<fixed val="true" />
+			<isLaTeX val="false" />
+			<font serif="false" sizeM="1.0" size="18" style="0" />
+			<absoluteScreenLocation x="430" y="112" />
+		</element>
+		<expression label="txtV1" exp="&quot;v₁ = &quot; + v1 + &quot; m/s&quot;" type="text" />
+		<element type="text" label="txtV1">
+			<show object="true" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<fixed val="true" />
+			<isLaTeX val="false" />
+			<font serif="false" sizeM="1.0" size="16" style="0" />
+			<absoluteScreenLocation x="700" y="140" />
+		</element>
+		<expression label="txtVC" exp="&quot;v_C = &quot; + vC + &quot; m/s&quot;" type="text" />
+		<element type="text" label="txtVC">
+			<show object="true" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<fixed val="true" />
+			<isLaTeX val="false" />
+			<font serif="false" sizeM="1.0" size="16" style="0" />
+			<absoluteScreenLocation x="880" y="140" />
+		</element>
+		<expression label="txtK" exp="&quot;k = &quot; + k" type="text" />
+		<element type="text" label="txtK">
+			<show object="true" label="false" ev="4" />
+			<objColor r="204" g="51" b="0" alpha="0.0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<fixed val="true" />
+			<isLaTeX val="false" />
+			<font serif="false" sizeM="1.0" size="16" style="0" />
+			<absoluteScreenLocation x="1060" y="140" />
+		</element>
+		<expression label="txtCase" exp="If[k &gt; 1.001, &quot;情形：减速进入（安培力 &gt; 重力）&quot;, If[k &lt; 0.999, &quot;情形：加速进入（安培力 &lt; 重力）&quot;, &quot;情形：匀速进入（安培力 = 重力）&quot;]]" type="text" />
+		<element type="text" label="txtCase">
+			<show object="true" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<fixed val="true" />
+			<isLaTeX val="false" />
+			<font serif="false" sizeM="1.0" size="16" style="0" />
+			<absoluteScreenLocation x="700" y="168" />
+		</element>
+		<expression label="txtTT" exp="&quot;t₁ = &quot; + t1 + &quot; s　　t₂ = &quot; + t2 + &quot; s&quot;" type="text" />
+		<element type="text" label="txtTT">
+			<show object="true" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<fixed val="true" />
+			<isLaTeX val="false" />
+			<font serif="false" sizeM="1.0" size="16" style="0" />
+			<absoluteScreenLocation x="700" y="196" />
+		</element>
+		<expression label="txtVcur" exp="&quot;当前速度 v = &quot; + fv(t) + &quot; m/s&quot;" type="text" />
+		<element type="text" label="txtVcur">
+			<show object="true" label="false" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<fixed val="true" />
+			<isLaTeX val="false" />
+			<font serif="false" sizeM="1.0" size="16" style="0" />
+			<absoluteScreenLocation x="700" y="224" />
+		</element>
+		<expression label="txtWarn" exp="If[h + H &gt; 1.75, &quot;⚠ 释放高度过大：线框初始超出视野（减小 k 或增大 B·l、减小 m·R）&quot;, If[vTail &gt; 7.6, &quot;⚠ 尾段速度超出 v-t 图量程（0 - 8 m/s）&quot;, &quot;&quot;]]" type="text" />
+		<element type="text" label="txtWarn">
+			<show object="true" label="false" ev="4" />
+			<objColor r="255" g="0" b="0" alpha="0.0" />
+			<layer val="2" />
+			<labelMode val="0" />
+			<fixed val="true" />
+			<isLaTeX val="false" />
+			<font serif="false" sizeM="1.0" size="14" style="0" />
+			<absoluteScreenLocation x="700" y="252" />
+		</element>
+<!-- 动画区标注 -->
+<!-- ============ 9. 磁场 × 点阵（5 列 × 4 行） ============ -->
+<!-- ============ 10. 交互控件：隐藏开关 / 播放 / 重置 / 临界 ============ -->
+		<element type="boolean" label="playing">
+			<value val="false" />
+			<show object="false" label="true" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0.0" />
+			<layer val="7" />
+			<labelMode val="0" />
+			<checkbox fixed="true" />
+		</element>
+		<element type="button" label="btnPlay">
+			<show object="true" label="true" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<bgColor r="255" g="255" b="255" alpha="255" />
+			<layer val="7" />
+			<labelOffset x="500" y="52" />
+			<labelMode val="3" />
+			<fixed val="true" />
+			<auxiliary val="true" />
+			<ggbscript val="playing = If[playing, false, true]&#13;&#10;StartAnimation[t, playing]&#13;&#10;SetCaption[btnPlay, If[playing, &quot;暂停&quot;, &quot;播放 ▶&quot;]]" />
+			<caption val="播放 ▶" />
+			<font serif="false" sizeM="2" size="18" style="0" />
+		</element>
+		<element type="button" label="btnReset">
+			<show object="true" label="true" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<bgColor r="255" g="255" b="255" alpha="255" />
+			<layer val="7" />
+			<labelOffset x="620" y="52" />
+			<labelMode val="3" />
+			<fixed val="true" />
+			<auxiliary val="true" />
+			<ggbscript val="SetValue[t, 0]&#13;&#10;playing = false&#13;&#10;StartAnimation[t, false]&#13;&#10;SetCaption[btnPlay, &quot;播放 ▶&quot;]" />
+			<caption val="重置" />
+			<font serif="false" sizeM="2" size="18" style="0" />
+		</element>
+		<element type="button" label="btnCrit">
+			<show object="true" label="true" ev="4" />
+			<objColor r="0" g="0" b="0" alpha="0" />
+			<bgColor r="255" g="255" b="255" alpha="255" />
+			<layer val="7" />
+			<labelOffset x="730" y="52" />
+			<labelMode val="3" />
+			<fixed val="true" />
+			<auxiliary val="true" />
+			<ggbscript val="SetValue[k, 1]" />
+			<caption val="调到临界 v_C" />
+			<font serif="false" sizeM="2" size="18" style="0" />
+		</element>
+	<expression label="tx11" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx11">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="-0.84" y="-0.33" z="1"/>
+</element>
+
+<expression label="tx12" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx12">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="-0.54" y="-0.33" z="1"/>
+</element>
+
+<expression label="tx13" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx13">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="-0.24" y="-0.33" z="1"/>
+</element>
+
+<expression label="tx14" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx14">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="0.06" y="-0.33" z="1"/>
+</element>
+
+<expression label="tx15" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx15">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="0.36" y="-0.33" z="1"/>
+</element>
+
+<expression label="tx21" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx21">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="-0.84" y="-0.73" z="1"/>
+</element>
+
+<expression label="tx22" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx22">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="-0.54" y="-0.73" z="1"/>
+</element>
+
+<expression label="tx23" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx23">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="-0.24" y="-0.73" z="1"/>
+</element>
+
+<expression label="tx24" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx24">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="0.06" y="-0.73" z="1"/>
+</element>
+
+<expression label="tx25" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx25">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="0.36" y="-0.73" z="1"/>
+</element>
+
+<expression label="tx31" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx31">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="-0.84" y="-1.13" z="1"/>
+</element>
+
+<expression label="tx32" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx32">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="-0.54" y="-1.13" z="1"/>
+</element>
+
+<expression label="tx33" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx33">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="-0.24" y="-1.13" z="1"/>
+</element>
+
+<expression label="tx34" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx34">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="0.06" y="-1.13" z="1"/>
+</element>
+
+<expression label="tx35" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx35">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="0.36" y="-1.13" z="1"/>
+</element>
+
+<expression label="tx41" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx41">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="-0.84" y="-1.53" z="1"/>
+</element>
+
+<expression label="tx42" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx42">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="-0.54" y="-1.53" z="1"/>
+</element>
+
+<expression label="tx43" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx43">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="-0.24" y="-1.53" z="1"/>
+</element>
+
+<expression label="tx44" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx44">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="0.06" y="-1.53" z="1"/>
+</element>
+
+<expression label="tx45" exp="&quot;×&quot;" type="text"/>
+<element type="text" label="tx45">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="16" style="0"/>
+	<startPoint x="0.36" y="-1.53" z="1"/>
+</element>
+
+<expression label="txv0" exp="&quot;0&quot;" type="text"/>
+<element type="text" label="txv0">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="14" style="0"/>
+	<startPoint x="1.1" y="-1.55" z="1"/>
+</element>
+
+<expression label="txv2" exp="&quot;2&quot;" type="text"/>
+<element type="text" label="txv2">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="14" style="0"/>
+	<startPoint x="1.1" y="-0.9" z="1"/>
+</element>
+
+<expression label="txv4" exp="&quot;4&quot;" type="text"/>
+<element type="text" label="txv4">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="14" style="0"/>
+	<startPoint x="1.1" y="-0.25" z="1"/>
+</element>
+
+<expression label="txv6" exp="&quot;6&quot;" type="text"/>
+<element type="text" label="txv6">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="14" style="0"/>
+	<startPoint x="1.1" y="0.4" z="1"/>
+</element>
+
+<expression label="txv8" exp="&quot;8&quot;" type="text"/>
+<element type="text" label="txv8">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="14" style="0"/>
+	<startPoint x="1.1" y="1.05" z="1"/>
+</element>
+
+<expression label="taxT" exp="&quot;t/s&quot;" type="text"/>
+<element type="text" label="taxT">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="14" style="0"/>
+	<startPoint x="4.0" y="-1.48" z="1"/>
+</element>
+
+<expression label="taxV" exp="&quot;v/(m/s)&quot;" type="text"/>
+<element type="text" label="taxV">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="14" style="0"/>
+	<startPoint x="1.2" y="1.12" z="1"/>
+</element>
+
+<expression label="txO" exp="&quot;O&quot;" type="text"/>
+<element type="text" label="txO">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="15" style="0"/>
+	<startPoint x="-1.3" y="0.1" z="1"/>
+</element>
+
+<expression label="txOp" exp="&quot;O'&quot;" type="text"/>
+<element type="text" label="txOp">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="15" style="0"/>
+	<startPoint x="0.88" y="0.1" z="1"/>
+</element>
+
+<expression label="txB" exp="&quot;B&quot;" type="text"/>
+<element type="text" label="txB">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="24" style="0"/>
+	<startPoint x="0.1" y="-0.8" z="1"/>
+</element>
+
+<expression label="txvtTitle" exp="&quot;v-t 图像&quot;" type="text"/>
+<element type="text" label="txvtTitle">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="15" style="0"/>
+	<startPoint x="1.3" y="1.3" z="1"/>
+</element>
+
+<expression label="txField" exp="&quot;磁场垂直纸面向里（×）&quot;" type="text"/>
+<element type="text" label="txField">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="0" g="0" b="0" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="14" style="0"/>
+	<startPoint x="-0.95" y="-1.82" z="1"/>
+</element>
+
+<expression label="lg1" exp="&quot;___ 速度 v-t 曲线    --- v_C 临界速度线&quot;" type="text"/>
+<element type="text" label="lg1">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="60" g="60" b="60" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="12" style="0"/>
+	<startPoint x="1.25" y="-1.18" z="1"/>
+</element>
+<expression label="lg2" exp="&quot;┊ t₁ / t₂ 时刻线&quot;" type="text"/>
+<element type="text" label="lg2">
+	<show object="true" label="false" ev="4"/>
+	<objColor r="120" g="120" b="120" alpha="0.0"/>
+	<layer val="2"/>
+	<labelMode val="0"/>
+	<fixed val="true"/>
+	<isLaTeX val="false"/>
+	<font serif="false" sizeM="1.0" size="12" style="0"/>
+	<startPoint x="1.25" y="-1.36" z="1"/>
+</element>
+</construction>
+</geogebra>

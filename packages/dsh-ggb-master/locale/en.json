@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "GeoGebra courseware (ggb-master)",
+    "description": "Mounts the ggb-master skill, registers the ggb native tool, and declares a \"GGB courseware\" agent preset so the Generate / Modify workflow can be plugged in or out at will"
+  }
+}

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<geogebra format="5.0" version="5.2.871.0" app="classic" platform="d" xsi:noNamespaceSchemaLocation="http://www.geogebra.org/apps/xsd/ggb.xsd" xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+<gui>
+	<window width="1200" height="800" />
+	<perspectives>
+<perspective id="tmp">
+	<panes>
+		<pane location="" divider="0.8" orientation="1" />
+	</panes>
+	<views>
+		<view id="1" visible="true" inframe="false" stylebar="true" location="3" size="1200" window="100,100,600,400" />
+	</views>
+	<toolbar show="true" items="0 73 62 | 1 501 67 , 5 19 , 72 75 76 | 2 15 45 , 18 65 , 7 37 | 4 3 8 9 , 13 44 , 58 , 47 | 16 51 64 , 70 | 10 34 53 11 , 24  20 22 , 21 23 | 55 56 57 , 12 | 36 46 , 38 49  50 , 71  14  68 | 30 29 54 32 31 33 | 25 17 26 60 52 61 | 40 41 42 , 27 28 35 , 6" position="1" help="false" />
+	<input show="true" cmd="true" top="algebra" />
+	<dockBar show="false" east="false" />
+</perspective>
+	</perspectives>
+	<labelingStyle  val="1"/>
+	<font  size="18"/>
+</gui>
+<euclidianView>
+	<viewNumber viewNo="1"/>
+	<size  width="1200" height="700"/>
+	<coordSystem xZero="560" yZero="380" scale="40" yscale="40"/>
+	<evSettings axes="true" grid="false" gridIsBold="false" pointCapturing="3" rightAngleStyle="1" checkboxSize="26" gridType="3"/>
+	<bgColor r="255" g="255" b="255"/>
+	<axesColor r="37" g="37" b="37"/>
+	<gridColor r="192" g="192" b="192"/>
+	<lineStyle axes="1" grid="0"/>
+	<axis id="0" show="true" label="" unitLabel="" tickStyle="1" showNumbers="true"/>
+	<axis id="1" show="true" label="" unitLabel="" tickStyle="1" showNumbers="true"/>
+</euclidianView>
+<algebraView>
+	<mode val="1"/>
+</algebraView>
+<kernel>
+	<continuous val="false"/>
+	<usePathAndRegionParameters val="true"/>
+	<decimals val="5"/>
+	<angleUnit val="degree"/>
+	<algebraStyle val="0" spreadsheet="0"/>
+	<coordStyle val="0"/>
+</kernel>
+<tableview min="-2.0" max="2.0" step="1.0"/>
+<scripting blocked="false" disabled="false"/>
+<construction title="开普勒三定律模拟" author="" date="">
+    <element type="numeric" label="a"><show object="true" label="true" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="1"/><slider min="2" max="8" width="180" x="20" y="30" fixed="false" horizontal="true" absoluteScreenLocation="true"/><value val="5"/><animation step="0.1" speed="1" type="1" playing="false"/><caption val="半长轴 a（第一/三定律）"/></element>
+    <element type="numeric" label="ex"><show object="true" label="true" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="1"/><slider min="0" max="0.7" width="180" x="20" y="80" fixed="false" horizontal="true" absoluteScreenLocation="true"/><value val="0.5"/><animation step="0.01" speed="1" type="1" playing="false"/><caption val="离心率 e"/></element>
+    <element type="numeric" label="t"><show object="true" label="true" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="1"/><slider min="0" max="6.283185307179586" width="180" x="20" y="130" fixed="false" horizontal="true" absoluteScreenLocation="true"/><value val="0"/><animation step="0.02" speed="1" type="1" playing="true"/><caption val="时间 / 平近点角 t（动画）"/></element>
+    <element type="numeric" label="dt"><show object="true" label="true" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="1"/><slider min="0.1" max="1.0" width="180" x="20" y="180" fixed="false" horizontal="true" absoluteScreenLocation="true"/><value val="0.2"/><animation step="0.05" speed="1" type="1" playing="false"/><caption val="第二定律时间间隔 Δt"/></element>
+    <element type="numeric" label="a2"><show object="true" label="true" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="1"/><slider min="1.5" max="7" width="180" x="20" y="230" fixed="false" horizontal="true" absoluteScreenLocation="true"/><value val="3"/><animation step="0.1" speed="1" type="1" playing="false"/><caption val="第二轨道半长轴 a₂"/></element>
+    <element type="numeric" label="ex2"><show object="true" label="true" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="1"/><slider min="0" max="0.7" width="180" x="20" y="280" fixed="false" horizontal="true" absoluteScreenLocation="true"/><value val="0.3"/><animation step="0.01" speed="1" type="1" playing="false"/><caption val="第二轨道离心率 e₂"/></element>
+    <expression label="b" exp="a * sqrt(1 - ex^2)" type="numeric"/>
+    <element type="numeric" label="b"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="4.330127018922193"/></element>
+    <expression label="c" exp="a * ex" type="numeric"/>
+    <element type="numeric" label="c"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="2.5"/></element>
+    <expression label="M" exp="t" type="numeric"/>
+    <element type="numeric" label="M"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="0"/></element>
+    <expression label="M2" exp="t + dt" type="numeric"/>
+    <element type="numeric" label="M2"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="0.2"/></element>
+    <expression label="M3" exp="t + 2*dt" type="numeric"/>
+    <element type="numeric" label="M3"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="0.4"/></element>
+    <expression label="b2" exp="a2 * sqrt(1 - ex2^2)" type="numeric"/>
+    <element type="numeric" label="b2"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="2.861817604250837"/></element>
+    <expression label="c2" exp="a2 * ex2" type="numeric"/>
+    <element type="numeric" label="c2"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="0.8999999999999999"/></element>
+    <expression label="T1" exp="a^(3/2)" type="numeric"/>
+    <element type="numeric" label="T1"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="11.180339887498949"/></element>
+    <expression label="T2" exp="a2^(3/2)" type="numeric"/>
+    <element type="numeric" label="T2"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="5.196152422706632"/></element>
+    <expression label="ratio1" exp="T1^2 / a^3" type="numeric"/>
+    <element type="numeric" label="ratio1"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="1.0"/></element>
+    <expression label="ratio2" exp="T2^2 / a2^3" type="numeric"/>
+    <element type="numeric" label="ratio2"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="1.0"/></element>
+    <expression label="swept" exp="a*b*t/2" type="numeric"/>
+    <element type="numeric" label="swept"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="0.0"/></element>
+    <expression label="E" exp="M + ex*sin(M) + (ex^2 / 2)*sin(2*M) + (ex^3 / 8)*(3*sin(3*M) - sin(M))" type="numeric"/>
+    <element type="numeric" label="E"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="0.0"/></element>
+    <expression label="E2" exp="M2 + ex*sin(M2) + (ex^2 / 2)*sin(2*M2) + (ex^3 / 8)*(3*sin(3*M2) - sin(M2))" type="numeric"/>
+    <element type="numeric" label="E2"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="0.3713753658328314"/></element>
+    <expression label="E3" exp="M3 + ex*sin(M3) + (ex^2 / 2)*sin(2*M3) + (ex^3 / 8)*(3*sin(3*M3) - sin(M3))" type="numeric"/>
+    <element type="numeric" label="E3"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="0.7219833530729067"/></element>
+    <expression label="M2b" exp="t * T1 / T2" type="numeric"/>
+    <element type="numeric" label="M2b"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="0.0"/></element>
+    <expression label="E2b" exp="M2b + ex2*sin(M2b) + (ex2^2 / 2)*sin(2*M2b) + (ex2^3 / 8)*(3*sin(3*M2b) - sin(M2b))" type="numeric"/>
+    <element type="numeric" label="E2b"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="0.0"/></element>
+    <expression label="Sun" exp="(0, 0)" type="point"/>
+    <element type="point" label="Sun"><show object="true" label="true" ev="4"/><objColor r="255" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="1"/><animation step="0.1" speed="1" type="1" playing="false"/><pointSize val="9"/><pointStyle val="0"/><coords x="0" y="0" z="1.0"/><fixed val="true"/><caption val="太阳"/></element>
+    <expression label="F2" exp="(-2*c, 0)" type="point"/>
+    <element type="point" label="F2"><show object="true" label="false" ev="4"/><objColor r="128" g="128" b="128" alpha="0.0"/><layer val="0"/><labelMode val="1"/><animation step="0.1" speed="1" type="1" playing="false"/><pointSize val="4"/><pointStyle val="0"/><coords x="-5.0" y="0" z="1.0"/></element>
+    <expression label="O" exp="(-c, 0)" type="point"/>
+    <element type="point" label="O"><show object="true" label="false" ev="4"/><objColor r="128" g="128" b="128" alpha="0.0"/><layer val="0"/><labelMode val="1"/><animation step="0.1" speed="1" type="1" playing="false"/><pointSize val="3"/><pointStyle val="0"/><coords x="-2.5" y="0" z="1.0"/></element>
+    <expression label="A" exp="(a-c, 0)" type="point"/>
+    <element type="point" label="A"><show object="true" label="false" ev="4"/><objColor r="0" g="128" b="0" alpha="0.0"/><layer val="0"/><labelMode val="1"/><animation step="0.1" speed="1" type="1" playing="false"/><pointSize val="4"/><pointStyle val="0"/><coords x="2.5" y="0" z="1.0"/></element>
+    <expression label="P" exp="(a*cos(E)-c, b*sin(E))" type="point"/>
+    <element type="point" label="P"><show object="true" label="true" ev="4"/><objColor r="0" g="0" b="255" alpha="0.0"/><layer val="0"/><labelMode val="1"/><animation step="0.1" speed="1" type="1" playing="false"/><pointSize val="7"/><pointStyle val="0"/><coords x="2.5" y="0.0" z="1.0"/><caption val="行星"/></element>
+    <expression label="P2" exp="(a*cos(E2)-c, b*sin(E2))" type="point"/>
+    <element type="point" label="P2"><show object="true" label="false" ev="4"/><objColor r="0" g="180" b="0" alpha="0.0"/><layer val="0"/><labelMode val="1"/><animation step="0.1" speed="1" type="1" playing="false"/><pointSize val="5"/><pointStyle val="0"/><coords x="2.159145552217451" y="1.5713917533318231" z="1.0"/></element>
+    <expression label="P3" exp="(a*cos(E3)-c, b*sin(E3))" type="point"/>
+    <element type="point" label="P3"><show object="true" label="false" ev="4"/><objColor r="180" g="120" b="0" alpha="0.0"/><layer val="0"/><labelMode val="1"/><animation step="0.1" speed="1" type="1" playing="false"/><pointSize val="5"/><pointStyle val="0"/><coords x="1.252482293491437" y="2.861670399919413" z="1.0"/></element>
+    <expression label="F2_2" exp="(-2*c2, 0)" type="point"/>
+    <element type="point" label="F2_2"><show object="true" label="false" ev="4"/><objColor r="128" g="128" b="128" alpha="0.0"/><layer val="0"/><labelMode val="1"/><animation step="0.1" speed="1" type="1" playing="false"/><pointSize val="4"/><pointStyle val="0"/><coords x="-1.7999999999999998" y="0" z="1.0"/></element>
+    <expression label="O2" exp="(-c2, 0)" type="point"/>
+    <element type="point" label="O2"><show object="true" label="false" ev="4"/><objColor r="128" g="128" b="128" alpha="0.0"/><layer val="0"/><labelMode val="1"/><animation step="0.1" speed="1" type="1" playing="false"/><pointSize val="3"/><pointStyle val="0"/><coords x="-0.8999999999999999" y="0" z="1.0"/></element>
+    <expression label="A2" exp="(a2-c2, 0)" type="point"/>
+    <element type="point" label="A2"><show object="true" label="false" ev="4"/><objColor r="0" g="128" b="0" alpha="0.0"/><layer val="0"/><labelMode val="1"/><animation step="0.1" speed="1" type="1" playing="false"/><pointSize val="4"/><pointStyle val="0"/><coords x="2.1" y="0" z="1.0"/></element>
+    <expression label="P2b" exp="(a2*cos(E2b)-c2, b2*sin(E2b))" type="point"/>
+    <element type="point" label="P2b"><show object="true" label="true" ev="4"/><objColor r="255" g="140" b="0" alpha="0.0"/><layer val="0"/><labelMode val="1"/><animation step="0.1" speed="1" type="1" playing="false"/><pointSize val="6"/><pointStyle val="0"/><coords x="2.1" y="0.0" z="1.0"/><caption val="行星₂"/></element>
+    <expression label="Orbit" exp="(x+c)^2/a^2 + y^2/b^2 = 1" type="conic"/>
+    <element type="conic" label="Orbit"><show object="true" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><lineStyle thickness="4" type="0" typeHidden="1"/><eqnStyle style="implicit"/></element>
+    <expression label="Orbit2" exp="(x+c2)^2/a2^2 + y^2/b2^2 = 1" type="conic"/>
+    <element type="conic" label="Orbit2"><show object="true" label="false" ev="4"/><objColor r="100" g="100" b="100" alpha="0.0"/><layer val="0"/><labelMode val="0"/><lineStyle thickness="3" type="15" typeHidden="1"/><eqnStyle style="implicit"/></element>
+    <command name="Polygon"><input a0="Sun" a1="P" a2="P2"/><output a0="s1" a1="s1a" a2="s1b" a3="s1c"/></command>
+    <element type="polygon" label="s1"><show object="true" label="false" ev="4"/><objColor r="0" g="180" b="0" alpha="0.25"/><layer val="0"/><labelMode val="0"/><lineStyle thickness="1" type="0" typeHidden="1" opacity="63"/></element>
+    <element type="segment" label="s1a"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><lineStyle thickness="1" type="0" typeHidden="1"/><eqnStyle style="explicit"/></element>
+    <element type="segment" label="s1b"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><lineStyle thickness="1" type="0" typeHidden="1"/><eqnStyle style="explicit"/></element>
+    <element type="segment" label="s1c"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><lineStyle thickness="1" type="0" typeHidden="1"/><eqnStyle style="explicit"/></element>
+    <command name="Polygon"><input a0="Sun" a1="P2" a2="P3"/><output a0="s2" a1="s2a" a2="s2b" a3="s2c"/></command>
+    <element type="polygon" label="s2"><show object="true" label="false" ev="4"/><objColor r="0" g="100" b="220" alpha="0.25"/><layer val="0"/><labelMode val="0"/><lineStyle thickness="1" type="0" typeHidden="1" opacity="63"/></element>
+    <element type="segment" label="s2a"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><lineStyle thickness="1" type="0" typeHidden="1"/><eqnStyle style="explicit"/></element>
+    <element type="segment" label="s2b"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><lineStyle thickness="1" type="0" typeHidden="1"/><eqnStyle style="explicit"/></element>
+    <element type="segment" label="s2c"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><lineStyle thickness="1" type="0" typeHidden="1"/><eqnStyle style="explicit"/></element>
+    <expression label="area1" exp="Area(s1)" type="numeric"/>
+    <element type="numeric" label="area1"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="1.9642396916647789"/></element>
+    <expression label="area2" exp="Area(s2)" type="numeric"/>
+    <element type="numeric" label="area2"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="2.1053112843558814"/></element>
+    <expression label="r" exp="Distance(Sun, P)" type="numeric"/>
+    <element type="numeric" label="r"><show object="false" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><value val="2.5"/></element>
+    <command name="Segment"><input a0="Sun" a1="P"/><output a0="segSP"/></command>
+    <element type="segment" label="segSP"><show object="true" label="false" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="0"/><labelMode val="0"/><lineStyle thickness="2" type="10" typeHidden="1"/><eqnStyle style="explicit"/></element>
+    <command name="Segment"><input a0="Sun" a1="P2b"/><output a0="segSP2b"/></command>
+    <element type="segment" label="segSP2b"><show object="true" label="false" ev="4"/><objColor r="120" g="120" b="120" alpha="0.0"/><layer val="0"/><labelMode val="0"/><lineStyle thickness="2" type="10" typeHidden="1"/><eqnStyle style="explicit"/></element>
+    <expression label="titleText" exp='"开普勒三定律模拟"' type="text"/>
+    <element type="text" label="titleText"><show object="true" label="true" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="2"/><labelMode val="0"/><fixed val="true"/><isLaTeX val="false"/><font serif="false" sizeM="1.0" size="0" style="0"/><absoluteScreenLocation x="500" y="20"/></element>
+    <expression label="law1Text" exp='"第一定律：行星沿椭圆轨道运动，太阳位于一个焦点（原点）。"' type="text"/>
+    <element type="text" label="law1Text"><show object="true" label="true" ev="4"/><objColor r="180" g="0" b="0" alpha="0.0"/><layer val="2"/><labelMode val="0"/><fixed val="true"/><isLaTeX val="false"/><font serif="false" sizeM="1.0" size="0" style="0"/><absoluteScreenLocation x="500" y="60"/></element>
+    <expression label="law2Text" exp='"第二定律：相等时间扫过相等面积。绿色与蓝色两块面积应近似相等。"' type="text"/>
+    <element type="text" label="law2Text"><show object="true" label="true" ev="4"/><objColor r="0" g="100" b="0" alpha="0.0"/><layer val="2"/><labelMode val="0"/><fixed val="true"/><isLaTeX val="false"/><font serif="false" sizeM="1.0" size="0" style="0"/><absoluteScreenLocation x="500" y="90"/></element>
+    <expression label="law3Text" exp='"第三定律：T²/a³ = 常数。ratio1=" + ratio1 + "，ratio2=" + ratio2' type="text"/>
+    <element type="text" label="law3Text"><show object="true" label="true" ev="4"/><objColor r="0" g="0" b="180" alpha="0.0"/><layer val="2"/><labelMode val="0"/><fixed val="true"/><isLaTeX val="false"/><font serif="false" sizeM="1.0" size="0" style="0"/><absoluteScreenLocation x="500" y="120"/></element>
+    <expression label="dataText" exp='"r=" + r + "  扫过面积(理论)=" + swept + "  面积1=" + area1 + "  面积2=" + area2' type="text"/>
+    <element type="text" label="dataText"><show object="true" label="true" ev="4"/><objColor r="0" g="0" b="0" alpha="0.0"/><layer val="2"/><labelMode val="0"/><fixed val="true"/><isLaTeX val="false"/><font serif="false" sizeM="1.0" size="0" style="0"/><absoluteScreenLocation x="500" y="150"/></element>
+</construction>
+</geogebra>
