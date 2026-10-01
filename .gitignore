@@ -14,5 +14,9 @@
 __pycache__/
 *.pyc
 
+# —— Node / pnpm（插件包被 pnpm 安装时会用到）——
+node_modules/
+/.pnpm-store/
+
 # —— Finder / 编辑器 ——
 .DS_Store
